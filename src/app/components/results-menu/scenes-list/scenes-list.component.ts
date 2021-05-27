@@ -17,6 +17,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import * as services from '@services';
 import * as models from '@models';
 import { QueuedHyp3Job } from '@models';
+import { MakeNextHyp3BatchSearch } from '@store/search';
 
 @Component({
   selector: 'app-scenes-list',
@@ -53,6 +54,9 @@ export class ScenesListComponent implements OnInit, OnDestroy {
   public searchType: models.SearchType;
   public SearchTypes = models.SearchType;
 
+  private newJobsBatchAvailable = false;
+  private nextHyp3JobUrl = '';
+
   constructor(
     private store$: Store<AppState>,
     private mapService: services.MapService,
@@ -60,7 +64,7 @@ export class ScenesListComponent implements OnInit, OnDestroy {
     private keyboardService: services.KeyboardService,
     private scenesService: services.ScenesService,
     private pairService: services.PairService,
-    private hyp3: services.Hyp3Service,
+    private hyp3: services.Hyp3Service
   ) {}
 
   ngOnInit() {
@@ -118,9 +122,42 @@ export class ScenesListComponent implements OnInit, OnDestroy {
     this.subs.add(
       sortedScenes$.pipe(debounceTime(250)).subscribe(
         scenes => {
+          if (this.scenes !== undefined && scenes !== undefined) {
+            if (scenes.length !== this.scenes.length) {
+              this.scrollTo(this.scenes.length - 1);
+            }
+        }
           this.scenes = scenes;
         }
       )
+    );
+
+    this.subs.add(
+      this.store$.select(searchStore.getNextHyp3JobsUrl).pipe(
+      // ofType<SetNextJobsUrl>(SearchActionType.SET_NEXT_JOBS_URL),
+      // filter(action => !!action.payload),
+      // filter(action => action.payload !== '')
+      filter(url => !!url),
+      debounceTime(2000),
+      ).subscribe(
+        url => {
+          if (url !== this.nextHyp3JobUrl) {
+            this.nextHyp3JobUrl = url;
+            this.newJobsBatchAvailable = true;
+          }
+        }
+      )
+    );
+
+    this.subs.add(
+      this.scroll.scrolledIndexChange.pipe(
+        filter(_ => !!this.scenes),
+      ).subscribe( idx => {
+          if (this.newJobsBatchAvailable && idx > Math.round(0.65 * this.scenes.length)) {
+            this.store$.dispatch(new MakeNextHyp3BatchSearch(this.scenes));
+            this.newJobsBatchAvailable = false;
+          }
+        })
     );
 
     this.subs.add(
@@ -146,7 +183,6 @@ export class ScenesListComponent implements OnInit, OnDestroy {
       )
     );
 
-
     this.store$.select(scenesStore.getAllSceneProducts).subscribe(
       searchScenes => {
         this.hyp3ableByScene = {};
@@ -154,7 +190,6 @@ export class ScenesListComponent implements OnInit, OnDestroy {
           const hyp3able = this.hyp3.getHyp3ableProducts(
             (<models.CMRProduct[]>products).map(product => [product])
           );
-
 
           this.hyp3ableByScene[groupId] = hyp3able;
         });

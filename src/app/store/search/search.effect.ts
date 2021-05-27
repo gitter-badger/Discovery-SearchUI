@@ -7,7 +7,7 @@ import { of, forkJoin, combineLatest, Observable, EMPTY } from 'rxjs';
 import { map, withLatestFrom, switchMap, catchError, filter, first } from 'rxjs/operators';
 
 import { AppState } from '../app.reducer';
-import { SetSearchAmount, EnableSearch, DisableSearch, SetSearchType, SetNextJobsUrl, Hyp3BatchResponse } from './search.action';
+import { SetSearchAmount, EnableSearch, DisableSearch, SetSearchType, SetNextJobsUrl, Hyp3BatchResponse, MakeNextHyp3BatchSearch } from './search.action';
 import * as scenesStore from '@store/scenes';
 import * as filtersStore from '@store/filters';
 import * as mapStore from '@store/map';
@@ -19,14 +19,13 @@ import {
   SearchActionType,
   SearchResponse, SearchError, CancelSearch, SearchCanceled
 } from './search.action';
-import { getIsCanceled, getSearchType } from './search.reducer';
+import { getIsCanceled, getNextHyp3JobsUrl, getSearchType } from './search.reducer';
 
 import * as models from '@models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import WKT from 'ol/format/WKT';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
-import { getScenes } from '@store/scenes';
 import { SearchType } from '@models';
 @Injectable()
 export class SearchEffects {
@@ -71,10 +70,10 @@ export class SearchEffects {
   ));
 
   public getNextJobBatch = createEffect(() => this.actions$.pipe(
-    ofType<SetNextJobsUrl>(SearchActionType.SET_NEXT_JOBS_URL),
-    withLatestFrom(this.store$.select(getScenes)),
-    filter(([action, scenes]) => !!action.payload && scenes !== undefined),
-    switchMap(([action, currentScenes]) => this.nextCustomProduct$(action.payload, currentScenes))
+    ofType<MakeNextHyp3BatchSearch>(SearchActionType.MAKE_NEXT_HYP3_BATCH_SEARCH),
+    withLatestFrom(this.store$.select(getNextHyp3JobsUrl)),
+    filter(([currentScenes, url]) => !!url && currentScenes.payload !== undefined),
+    switchMap(([currentScenes, url]) => this.nextCustomProduct$(url, currentScenes.payload))
   ));
 
   public cancelSearchWhenFiltersCleared = createEffect(() => this.actions$.pipe(
