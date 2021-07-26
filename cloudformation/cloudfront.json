@@ -1,0 +1,31 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Resources" : {
+    "myDistribution" : {
+      "Type" : "AWS::CloudFront::Distribution",
+      "Properties" : {
+        "DistributionConfig" : {
+          "Origins" : [ {
+            "DomainName" :  {
+              "Fn::GetAtt": [ "S3Bucket", "DomainName" ]
+            },
+            "Id" : {
+              "Fn::Join": [
+                "",
+                [ "asf-search-", { "Ref": "S3Bucket" } ] ]
+            },
+            "S3OriginConfig": {
+              "OriginAccessIdentity": ""
+            }
+          }],
+          "Enabled" : "true",
+          "DefaultRootObject" : "index.html",
+          "ViewerCertificate": {
+            "CloudFrontDefaultCertificate" : "true"
+          }
+        }
+      },
+      "DependsOn": "S3Bucket"
+    }
+  }
+}
