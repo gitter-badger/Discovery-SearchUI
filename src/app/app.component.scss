@@ -1,3 +1,5 @@
+@import "asf-theme";
+
 .example-container {
   position: absolute;
   top: 0;
@@ -39,3 +41,9 @@
     top: 32px;
   }
 }
+
+a {
+  text-decoration: none;
+  color: $asf-primary;
+}
+

@@ -1,11 +1,69 @@
-<span matLine class="dataset__name" [class.subName__adj]="dataset.subName">
-  <b>{{ dataset.name }}</b>
-  <span *ngIf="dataset.beta"><em> (beta)</em></span>
-  &nbsp;-&nbsp;
-</span>
-<span matLine>
-  <span class="dataset__date" [class.subName__adj]="dataset.subName">{{ prettyDateRange(dataset.date) }}</span>
-  <mat-icon (click)="onOpenHelp()" class="clickable" style="margin-left: 10px;">info</mat-icon>
-</span>
-<div *ngIf="dataset.subName" class="dataset__subName faint-text">{{ dataset.subName }}</div>
+<!--<div id="localTemplate" style="display: none;">-->
+<!--  <h1>-->
+<!--    title-->
+<!--  </h1>-->
+<!--  <p>dataset.component.html Dynamically change this content as needed for your use.</p>-->
+<!--</div>-->
 
+<div id="{{ tippyTemplateID }}" style="display: none;">
+  <h1>
+    {{ dataset.name }}
+  </h1>
+  <p>dataset.component.html Dynamically change this content as needed for your use.</p>
+</div>
+
+<!--<span title="I am a tooltip"-->
+<!--      appTippy [tippyOptions]="{-->
+<!--      content: 'Vampires are real.',-->
+<!--      allowHTML: true,-->
+<!--      arrow: true,-->
+<!--      interactive: true,-->
+<!--      createPopperInstanceOnInit: true-->
+<!--      }">-->
+
+  <span id="{{tippyDivID}}" matLine class="dataset__name" [class.subName__adj]="dataset.subName"
+        appTippy [tippyOptions]="{
+        html: tippyTemplateIDRef,
+        allowHTML: true,
+        arrow: true,
+        interactive: true
+        }"
+  >
+      <b>{{ dataset.name }}</b>
+    <span *ngIf="dataset.beta"><em> (beta)</em></span>
+    &nbsp;-&nbsp;
+  </span>
+  <span matLine>
+    <span class="dataset__date" [class.subName__adj]="dataset.subName">{{ prettyDateRange(dataset.date) }}</span>
+    <mat-icon (click)="onOpenHelp()" class="clickable" style="margin-left: 10px;">info</mat-icon>
+  </span>
+  <div *ngIf="dataset.subName" class="dataset__subName faint-text">{{ dataset.subName }}</div>
+
+
+
+<!--<div id="{{ dataset.name }}" style="display: none;">-->
+<!--  <h1>-->
+<!--    {{ dataset.name }}-->
+<!--  </h1>-->
+<!--  <p>dataset.component.html Dynamically change this content as needed for your use.</p>-->
+<!--</div>-->
+
+<!--<span title="I am a tooltip"-->
+<!--      appTippy [tippyOptions]="{-->
+<!--      html: '#' + dataset.name,-->
+<!--      arrow: true,-->
+<!--      interactive: true-->
+<!--      }">-->
+
+<!--<span matLine class="dataset__name" [class.subName__adj]="dataset.subName">-->
+<!--    <b>{{ dataset.name }}</b>-->
+<!--  <span *ngIf="dataset.beta"><em> (beta)</em></span>-->
+<!--  &nbsp;-&nbsp;-->
+<!--</span>-->
+<!--<span matLine>-->
+<!--  <span class="dataset__date" [class.subName__adj]="dataset.subName">{{ prettyDateRange(dataset.date) }}</span>-->
+<!--  <mat-icon (click)="onOpenHelp()" class="clickable" style="margin-left: 10px;">info</mat-icon>-->
+<!--</span>-->
+<!--<div *ngIf="dataset.subName" class="dataset__subName faint-text">{{ dataset.subName }}</div>-->
+
+<!--</span>-->

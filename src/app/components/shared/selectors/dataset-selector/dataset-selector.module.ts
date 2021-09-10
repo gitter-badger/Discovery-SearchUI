@@ -11,6 +11,7 @@ import { MatSharedModule } from '@shared';
 import { DatasetSelectorComponent } from './dataset-selector.component';
 import { DatasetComponent } from './dataset/dataset.component';
 import {MatBadgeModule} from '@angular/material/badge';
+import {TippyModule} from 'ng-tippy';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {MatBadgeModule} from '@angular/material/badge';
         MatListModule,
         MatSharedModule,
         MatBadgeModule,
+        TippyModule,
     ],
   declarations: [
     DatasetSelectorComponent,

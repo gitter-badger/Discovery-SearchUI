@@ -33,6 +33,8 @@ import { AppComponent } from './app.component';
 import { CustomBreakPointsProvider } from '@services/custom-breakpoints';
 import * as services from '@services';
 
+import { TippyModule } from 'ng-tippy';
+
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
 import { getSaver, SAVER } from '@services/saver.provider';
 // import { OnlynumberDirective } from './directives/onlynumber.directive';
@@ -106,6 +108,7 @@ export const routes = [
     HelpModule,
     ToastrModule.forRoot({positionClass: 'inline', preventDuplicates: true}),
     ToastContainerModule,
+    TippyModule,
   ],
   providers: [
     services.AsfApiService,
